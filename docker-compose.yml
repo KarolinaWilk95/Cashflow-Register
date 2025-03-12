@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres
+    container_name: db-cfr
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: CFR
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8082:8080
