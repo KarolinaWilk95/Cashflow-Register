@@ -1,5 +1,6 @@
 package cashflow.register;
 
+import cashflow.CashFlowRegisterApplication;
 import org.springframework.boot.SpringApplication;
 
 public class TestCashFlowRegisterApplication {
