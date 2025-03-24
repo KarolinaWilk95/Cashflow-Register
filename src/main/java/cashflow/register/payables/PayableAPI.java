@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Currency;
 
 @Data
 public class PayableAPI {
@@ -15,7 +16,9 @@ public class PayableAPI {
     private LocalDate dueDate;
     private String contractorName;
     private BigDecimal totalAmount;
-    private String currencyCode;
+    private BigDecimal paymentAmount;
+    private BigDecimal unpaidAmount;
+    private Currency currencyCode;
     private BigDecimal totalAmountInPln;
 
 

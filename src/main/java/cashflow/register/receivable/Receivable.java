@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "receivables")
 @Data
 public class Receivable {
     @Id
@@ -13,14 +14,13 @@ public class Receivable {
     private Long id;
 
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "document_id")
+    private Document document;
+
     @Column
     private String reminderNumber;
 
     @Column
     private String demandForPaymentNumber;
-
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "document_id")
-    private Document document;
 }

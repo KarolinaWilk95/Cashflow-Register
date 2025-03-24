@@ -1,14 +1,13 @@
 package cashflow.document;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Currency;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class DocumentAPI {
 
@@ -38,7 +37,7 @@ public class DocumentAPI {
 
     private BigDecimal totalAmountInPln;
 
-    private String currencyCode;
+    private Currency currencyCode;
 
     private String orderNumber;
 
@@ -47,6 +46,7 @@ public class DocumentAPI {
     private BigDecimal paymentAmount;
 
     private BigDecimal amountDue;
+
 
 }
 

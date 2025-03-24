@@ -1,5 +1,6 @@
 package cashflow.document;
 
+import cashflow.document.currency_converter.CurrencyConverterService;
 import cashflow.exception.ResourceNotFoundException;
 import cashflow.register.payables.PayableService;
 import cashflow.register.receivable.ReceivableService;
@@ -17,23 +18,51 @@ public class DocumentService {
     private final DocumentRepository documentRepository;
     private final PayableService payableService;
     private final ReceivableService receivableService;
+    private final DocumentMapper documentMapper;
+    private final CurrencyConverterService converterService;
+
 
     public List<Document> showAll() {
         return documentRepository.findAll();
     }
 
-    @Transactional
-    public Document addDocument(Document newDocument) {
+    public Document findById(Long id) {
+        var document = documentRepository.findById(id);
+        if (document.isPresent()) {
+            return document.get();
+        } else {
+            throw new ResourceNotFoundException("Selected document not found");
+        }
+    }
+
+
+    public Document saveDocument(Document newDocument) {
         var savedDocument = documentRepository.save(newDocument);
 
         if (!newDocument.getPaymentAmount().equals(newDocument.getTotalAmount())) {
             if (newDocument.getDocumentGroup().equals(DocumentGroup.COST)) {
-                payableService.addDocument(savedDocument);
+                payableService.addDocument(newDocument);
             }
 
             if (newDocument.getDocumentGroup().equals(DocumentGroup.SALE)) {
-                receivableService.addDocument(savedDocument);
+                receivableService.addDocument(newDocument);
             }
+
+        }
+        return savedDocument;
+    }
+
+    @Transactional
+    public Document addDocument(Document newDocument) {
+
+        Document savedDocument = new Document();
+
+        if (newDocument.getCurrencyCode().equals("PLN")) {
+            saveDocument(newDocument);
+
+        } else {
+            newDocument.setTotalAmountInPln(converterService.purchaseRate(newDocument.getCurrencyCode(), newDocument.getTotalAmount()));
+            saveDocument(newDocument);
         }
         return savedDocument;
     }
@@ -64,5 +93,33 @@ public class DocumentService {
             throw new ResourceNotFoundException("Selected document not found");
         }
 
+        Document doc = documentOptional.get();
+        doc.setId(id);
+        doc.setDocumentGroup(document.getDocumentGroup());
+        doc.setDocumentType(document.getDocumentType());
+        doc.setDocumentNumber(document.getDocumentNumber());
+        doc.setSaleDate(document.getSaleDate());
+        doc.setIssueDate(document.getIssueDate());
+        doc.setDueDate(document.getDueDate());
+        doc.setContractorName(document.getContractorName());
+        doc.setContractorVatNumber(document.getContractorVatNumber());
+        doc.setAmount(document.getAmount());
+        doc.setTaxAmount(document.getTaxAmount());
+        doc.setTotalAmount(document.getTotalAmount());
+        doc.setCurrencyCode(document.getCurrencyCode());
+        doc.setOrderNumber(document.getOrderNumber());
+        doc.setPaymentDueDate(document.getPaymentDueDate());
+        doc.setPaymentAmount(document.getPaymentAmount());
+        doc.setAmountDue(document.getAmountDue());
+
+        documentRepository.save(doc);
+    }
+
+    public void partialUpdateDocument(Document document, Long id) {
+        var doc = documentRepository.findById(id);
+        if (doc.isPresent()) {
+            documentRepository.save(document);
+        }
     }
 }
+

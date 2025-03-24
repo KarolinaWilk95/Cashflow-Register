@@ -9,3 +9,18 @@ The project was created with the aim of improving work efficiency at my previous
 * Grouping payment due dates for improved monitoring of payables and receivables.
 
 Automating this process will save time and increase work efficiency while ensuring greater accuracy in data processing.
+
+
+
+
+
+Example to use PatchMapping: 
+```courseignore
+[
+    {
+        "op":"replace", 
+        "path":"/contractorName",
+        "value":"XYZ"
+    }
+]
+```

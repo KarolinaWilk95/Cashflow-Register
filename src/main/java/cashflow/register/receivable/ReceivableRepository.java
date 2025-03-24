@@ -19,4 +19,7 @@ public interface ReceivableRepository extends JpaRepository<Receivable, Long> {
     @Query("delete from Receivable r where r.document.id = :id")
     void deleteDocument(@Param("id") Long id);
 
+    @Query("select r from Receivable r where r.document.id = :id")
+    Optional<Receivable> findDocument(@Param("id") Long id);
+
 }

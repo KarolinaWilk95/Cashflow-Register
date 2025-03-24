@@ -6,9 +6,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Currency;
 
 @Entity
-@Table(name = "document")
+@Table(name = "documents")
 @Data
 public class Document {
     @Id
@@ -40,7 +41,7 @@ public class Document {
     private String contractorName;
 
     @Column
-    private Long contractorVATNumber;
+    private Long contractorVatNumber;
 
     @Column
     private BigDecimal amount;
@@ -55,7 +56,7 @@ public class Document {
     private BigDecimal totalAmountInPln;
 
     @Column
-    private String currencyCode;
+    private Currency currencyCode;
 
     @Column
     private String orderNumber;
@@ -68,4 +69,8 @@ public class Document {
 
     @Column
     private BigDecimal amountDue;
+
+
+
 }
+

@@ -28,4 +28,5 @@ public class PayableService {
     public void deleteDocument(Long id) {
         payableRepository.deleteDocument(id);
     }
+
 }

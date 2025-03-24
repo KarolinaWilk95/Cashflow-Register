@@ -16,14 +16,31 @@ public class ReceivableService {
 
 
     public Receivable addDocument(Document newDocument) {
-        return receivableRepository.save(receivableMapper.documentToReceivable(newDocument));
+        Receivable receivable = new Receivable();
+        receivable.setDocument(newDocument);
+        return receivableRepository.save(receivable);
     }
 
     public List<Receivable> showAll() {
         return receivableRepository.findAll();
     }
 
+    public Receivable findById(Long id) {
+        var doc = receivableRepository.findById(id);
+        if (doc.isEmpty()) {
+            throw new ResourceNotFoundException("Selected document not found");
+        }
+        return receivableRepository.findById(id).get();
+    }
+
     public void deleteDocument(Long id) {
         receivableRepository.deleteDocument(id);
     }
+
+
+    public void debtEnforcment(Receivable receivable) {
+        receivableRepository.save(receivable);
+    }
+
+
 }

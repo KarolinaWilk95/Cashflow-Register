@@ -19,4 +19,9 @@ public interface PayableRepository extends JpaRepository<Payable, Long> {
     @Query("delete from Payable p where p.document.id = :id")
     void deleteDocument(@Param("id") Long id);
 
+    @Query("select p from Payable p where p.document.id = :id")
+    Optional<Payable> findDocument(@Param("id") Long id);
+
+
+
 }

@@ -20,4 +20,8 @@ public class PayableController {
         var list = payableService.showAll();
         return list.stream().map(payableMapper::modelToApi).toList();
     }
+
+
+
+
 }
