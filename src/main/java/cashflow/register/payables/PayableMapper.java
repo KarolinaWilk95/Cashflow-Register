@@ -44,14 +44,6 @@ public interface PayableMapper {
 
 
     @Mapping(target = "documentId", source = "id")
-    @Mapping(target = "documentNumber", source = "documentNumber")
-    @Mapping(target = "issueDate", source = "issueDate")
-    @Mapping(target = "dueDate", source = "dueDate")
-    @Mapping(target = "contractorName", source = "contractorName")
-    @Mapping(target = "totalAmount", source = "totalAmount")
-    @Mapping(target = "paymentAmount", source = "paymentAmount")
     @Mapping(target = "unpaidAmount", expression = "java(unpaidAmount(document))")
-    @Mapping(target = "currencyCode", source = "currencyCode")
-    @Mapping(target = "totalAmountInPln", source = "totalAmountInPln")
     PayableAPI documentToApi(Document document);
 }

@@ -5,8 +5,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Period;
 
 @Mapper(componentModel = "spring")
 public interface ReceivableMapper {
@@ -34,7 +32,6 @@ public interface ReceivableMapper {
     ReceivableAPI modelToApi(Receivable receivable);
 
 
-
     @Mapping(source = "documentId", target = "document.id")
     @Mapping(source = "documentNumber", target = "document.documentNumber")
     @Mapping(source = "issueDate", target = "document.issueDate")
@@ -47,17 +44,8 @@ public interface ReceivableMapper {
     Receivable apiToModel(ReceivableAPI receivableAPI);
 
 
-
     @Mapping(target = "documentId", source = "id")
-    @Mapping(target = "documentNumber", source = "documentNumber")
-    @Mapping(target = "issueDate", source = "issueDate")
-    @Mapping(target = "dueDate", source = "dueDate")
-    @Mapping(target = "contractorName", source = "contractorName")
-    @Mapping(target = "totalAmount", source = "totalAmount")
-    @Mapping(target = "paymentAmount", source = "paymentAmount")
     @Mapping(target = "unpaidAmount", expression = "java(unpaidAmount(document))")
-    @Mapping(target = "currencyCode", source = "currencyCode")
-    @Mapping(target = "totalAmountInPln", source = "totalAmountInPln")
     @Mapping(target = "delayInDays", expression = "java(LocalDate.now().until(document.getDueDate(), java.time.temporal.ChronoUnit.DAYS))")
     ReceivableAPI documentToApi(Document document);
 }

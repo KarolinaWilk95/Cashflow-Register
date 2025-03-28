@@ -12,8 +12,6 @@ import java.util.List;
 public class PayableService {
 
     private final PayableRepository payableRepository;
-    private final PayableMapper payableMapper;
-
 
     public List<Payable> showAll() {
         return payableRepository.findAll();
@@ -25,8 +23,8 @@ public class PayableService {
         return payableRepository.save(payable);
     }
 
-    public void deleteDocument(Long id) {
-        payableRepository.deleteDocument(id);
+    public void deleteByDocumentId(Long documentId) {
+        payableRepository.deleteDocument(documentId);
     }
 
 }

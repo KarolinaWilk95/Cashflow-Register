@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public interface PayableRepository extends JpaRepository<Payable, Long> {
 
-    @Transactional
     @Modifying
     @Query("delete from Payable p where p.document.id = :id")
     void deleteDocument(@Param("id") Long id);

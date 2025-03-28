@@ -1,8 +1,6 @@
 package cashflow.register.receivable;
 
-import cashflow.document.Document;
 import cashflow.exception.ResourceNotFoundException;
-import cashflow.register.payables.PayableAPI;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -36,7 +33,7 @@ public class ReceivableController {
 
         try {
             var document = applyPatchToDocument(jsonPatch, doc);
-            receivableService.debtEnforcment(document);
+            receivableService.debtEnforcement(document);
             return ResponseEntity.ok().build();
         } catch (JsonPatchException | JsonProcessingException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -27,18 +27,19 @@ public class ReceivableService {
 
     public Receivable findById(Long id) {
         var doc = receivableRepository.findById(id);
+
         if (doc.isEmpty()) {
             throw new ResourceNotFoundException("Selected document not found");
         }
-        return receivableRepository.findById(id).get();
+        return doc.get();
     }
 
-    public void deleteDocument(Long id) {
-        receivableRepository.deleteDocument(id);
+    public void deleteByDocumentId(Long documentId) {
+        receivableRepository.deleteDocument(documentId);
     }
 
 
-    public void debtEnforcment(Receivable receivable) {
+    public void debtEnforcement(Receivable receivable) {
         receivableRepository.save(receivable);
     }
 
