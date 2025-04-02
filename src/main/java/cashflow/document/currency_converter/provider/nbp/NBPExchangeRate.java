@@ -1,4 +1,4 @@
-package cashflow.document.currency_converter;
+package cashflow.document.currency_converter.provider.nbp;
 
 import lombok.Data;
 

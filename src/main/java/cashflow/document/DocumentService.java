@@ -9,7 +9,6 @@ import cashflow.register.receivable.ReceivableService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,11 +57,11 @@ public class DocumentService {
         String currencyCode = String.valueOf(newDocument.getCurrencyCode());
 
         if (CURRENCY_CODE_PLN.equals(currencyCode)) {
-            saveDocument(newDocument);
+            savedDocument = saveDocument(newDocument);
 
         } else {
             newDocument.setTotalAmountInPln(converterService.purchaseRate(newDocument.getCurrencyCode(), newDocument.getTotalAmount()));
-            saveDocument(newDocument);
+            savedDocument = saveDocument(newDocument);
         }
         return savedDocument;
     }
@@ -129,17 +128,7 @@ public class DocumentService {
     }
 
 
-    public List<Document> sortDocumentsByColumnName(String columnName, String sortingMethod) {
-
-        return DEFAULT_SORTING_METHOD.equals(sortingMethod) ? documentRepository.findAll(Sort.by(Sort.Direction.ASC, columnName)) : documentRepository.findAll(Sort.by(Sort.Direction.DESC, columnName));
-
-    }
-
-    public List<Document> showAllDocumentsByColumnName(String columnName, String value) {
-        return documentRepository.findAll(documentRepository.hasColumnValue(columnName, value));
-    }
-
-    private void saveDocument(Document newDocument) {
+    private Document saveDocument(Document newDocument) {
 
         var savedDocument = documentRepository.save(newDocument);
 
@@ -152,6 +141,7 @@ public class DocumentService {
                 receivableService.addDocument(savedDocument);
             }
         }
+        return savedDocument;
     }
 
 

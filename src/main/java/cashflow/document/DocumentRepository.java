@@ -1,6 +1,5 @@
 package cashflow.document;
 
-import cashflow.dao.DocumentFilterRequest;
 import jakarta.persistence.criteria.Predicate;
 import org.hibernate.query.criteria.JpaExpression;
 import org.springframework.data.domain.Page;
@@ -19,14 +18,6 @@ import java.util.List;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long>,
         JpaSpecificationExecutor<Document> {
-
-
-    default Specification<Document> hasColumnValue(String columnName, String value) {
-
-        return ((root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get(columnName), "%" + value + "%"));
-
-    }
 
 
     default Specification<Document> hasValue(String value) {
@@ -49,6 +40,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long>,
                 } else if (column.getType().equals(BigDecimal.class) || column.getType().equals(Long.class)) {
 
                     predicates.add(criteriaBuilder.like(((JpaExpression) root.get(column.getName())).cast(String.class), searchValue));
+                } else if (column.getType().isEnum()) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(((JpaExpression) root.get(column.getName())).cast(String.class)), searchValue));
                 }
             }
 

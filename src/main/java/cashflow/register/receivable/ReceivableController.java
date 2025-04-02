@@ -47,4 +47,12 @@ public class ReceivableController {
         JsonNode patched = patch.apply(objectMapper.convertValue(receivable, JsonNode.class));
         return objectMapper.treeToValue(patched, Receivable.class);
     }
+
+    @GetMapping("api/receivables/overdue")
+    public List<ReceivableAPI> createReportAboutOverdueReceivables(@RequestParam(name = "group", required = false) String group) {
+
+        var result = receivableService.createReportAboutOverdueReceivables();
+
+        return result.stream().map(receivableMapper::modelToApi).toList();
+    }
 }

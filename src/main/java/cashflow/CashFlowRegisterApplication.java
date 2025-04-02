@@ -19,4 +19,5 @@ public class CashFlowRegisterApplication {
 		return builder.build();
 	}
 
+
 }

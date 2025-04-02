@@ -19,11 +19,11 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO payables(document_id)
 SELECT d.id FROM documents d
-WHERE d.document_group = 'SALE'
+WHERE d.document_group = 'COST'
 ON CONFLICT DO NOTHING;
 
 INSERT INTO receivables(document_id)
 SELECT d.id FROM documents d
-WHERE d.document_group = 'COST'
+WHERE d.document_group = 'SALE'
 ON CONFLICT DO NOTHING;
 

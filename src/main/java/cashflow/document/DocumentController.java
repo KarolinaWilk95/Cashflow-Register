@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,8 +42,6 @@ public class DocumentController {
         List<Document> result;
 
         if (search != null) {
-            DocumentFilterRequest documentFilterRequest = new DocumentFilterRequest();
-
             result = documentService.getAllDocumentsByValue(pageable, search).stream().toList();
         } else {
             result = documentService.getAllDocuments(pageable).stream().toList();
@@ -105,62 +105,46 @@ public class DocumentController {
         return objectMapper.treeToValue(patched, Document.class);
     }
 
-//    @GetMapping("api/documents/filter")
-//    public List<DocumentAPI> filter(@RequestParam(name = "documentGroup", required = false) DocumentGroup documentGroup,
-//                                    @RequestParam(name = "documentType", required = false) DocumentType documentType,
-//                                    @RequestParam(name = "documentNumber", required = false) String documentNumber,
-//                                    @RequestParam(name = "issueDate", required = false) LocalDate issueDate,
-//                                    @RequestParam(name = "dueDate", required = false) LocalDate dueDate,
-//                                    @RequestParam(name = "contractorName", required = false) String contractorName,
-//                                    @RequestParam(name = "contractorVATNumber", required = false) Long contractorVATNumber,
-//                                    @RequestParam(name = "amount", required = false) BigDecimal amount,
-//                                    @RequestParam(name = "lessThanAmount", required = false) BigDecimal lessThanAmount,
-//                                    @RequestParam(name = "greaterThanAmount", required = false) BigDecimal greaterThanAmount,
-//                                    @RequestParam(name = "totalAmount", required = false) BigDecimal totalAmount,
-//                                    @RequestParam(name = "lessThanTotalAmount", required = false) BigDecimal lessThanTotalAmount,
-//                                    @RequestParam(name = "greaterThanTotalAmount", required = false) BigDecimal greaterThanTotalAmount,
-//                                    @RequestParam(name = "currencyCode", required = false) String currencyCode,
-//                                    @RequestParam(name = "orderNumber", required = false) String orderNumber) {
-//        DocumentFilterRequest documentSearchRequest = new DocumentFilterRequest();
-//        documentSearchRequest.setDocumentGroup(documentGroup);
-//        documentSearchRequest.setDocumentType(documentType);
-//        documentSearchRequest.setDocumentNumber(documentNumber);
-//        documentSearchRequest.setIssueDate(issueDate);
-//        documentSearchRequest.setDueDate(dueDate);
-//        documentSearchRequest.setContractorName(contractorName);
-//        documentSearchRequest.setContractorVATNumber(contractorVATNumber);
-//        documentSearchRequest.setAmount(amount);
-//        documentSearchRequest.setGreaterThanAmount(greaterThanAmount);
-//        documentSearchRequest.setLessThanAmount(lessThanAmount);
-//        documentSearchRequest.setTotalAmount(totalAmount);
-//        documentSearchRequest.setLessThanTotalAmount(lessThanTotalAmount);
-//        documentSearchRequest.setGreaterThanTotalAmount(greaterThanTotalAmount);
-//        documentSearchRequest.setCurrencyCode(currencyCode);
-//        documentSearchRequest.setOrderNumber(orderNumber);
-//
-//        List<Document> list = documentService.filter(documentSearchRequest);
-//
-//        return list.stream().map(documentMapper::modelToApi).toList();
-//
-//
-//    }
+    @GetMapping("api/documents/filter")
+    public List<DocumentAPI> filter(@RequestParam(name = "documentGroup", required = false) String documentGroup,
+                                    @RequestParam(name = "documentType", required = false) String documentType,
+                                    @RequestParam(name = "documentNumber", required = false) String documentNumber,
+                                    @RequestParam(name = "issueDate", required = false) LocalDate issueDate,
+                                    @RequestParam(name = "dueDate", required = false) LocalDate dueDate,
+                                    @RequestParam(name = "contractorName", required = false) String contractorName,
+                                    @RequestParam(name = "contractorVATNumber", required = false) Long contractorVATNumber,
+                                    @RequestParam(name = "amount", required = false) BigDecimal amount,
+                                    @RequestParam(name = "lessThanAmount", required = false) BigDecimal lessThanAmount,
+                                    @RequestParam(name = "greaterThanAmount", required = false) BigDecimal greaterThanAmount,
+                                    @RequestParam(name = "totalAmount", required = false) BigDecimal totalAmount,
+                                    @RequestParam(name = "lessThanTotalAmount", required = false) BigDecimal lessThanTotalAmount,
+                                    @RequestParam(name = "greaterThanTotalAmount", required = false) BigDecimal greaterThanTotalAmount,
+                                    @RequestParam(name = "currencyCode", required = false) String currencyCode,
+                                    @RequestParam(name = "orderNumber", required = false) String orderNumber) {
+        DocumentFilterRequest documentSearchRequest = new DocumentFilterRequest();
+        documentSearchRequest.setDocumentGroup(documentGroup);
+        documentSearchRequest.setDocumentType(documentType);
+        documentSearchRequest.setDocumentNumber(documentNumber);
+        documentSearchRequest.setIssueDate(issueDate);
+        documentSearchRequest.setDueDate(dueDate);
+        documentSearchRequest.setContractorName(contractorName);
+        documentSearchRequest.setContractorVatNumber(contractorVATNumber);
+        documentSearchRequest.setAmount(amount);
+        documentSearchRequest.setGreaterThanAmount(greaterThanAmount);
+        documentSearchRequest.setLessThanAmount(lessThanAmount);
+        documentSearchRequest.setTotalAmount(totalAmount);
+        documentSearchRequest.setLessThanTotalAmount(lessThanTotalAmount);
+        documentSearchRequest.setGreaterThanTotalAmount(greaterThanTotalAmount);
+        documentSearchRequest.setCurrencyCode(currencyCode);
+        documentSearchRequest.setOrderNumber(orderNumber);
 
-    @GetMapping("api/documents/sort")
-    public List<DocumentAPI> sortDocumentsByColumnName(@RequestParam String columnName,
-                                                       @RequestParam String sortingMethod) {
+        List<Document> list = documentService.filter(documentSearchRequest);
 
-        var list = documentService.sortDocumentsByColumnName(columnName, sortingMethod);
         return list.stream().map(documentMapper::modelToApi).toList();
+
 
     }
 
-    @GetMapping("api/documents/search")
-    public List<DocumentAPI> showAllDocumentsByColumnName(@RequestParam String columnName, @RequestParam String value) {
-
-        var list = documentService.showAllDocumentsByColumnName(columnName, value);
-        return list.stream().map(documentMapper::modelToApi).toList();
-
-    }
 
 
 }

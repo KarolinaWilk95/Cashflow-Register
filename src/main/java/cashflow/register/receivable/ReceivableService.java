@@ -44,4 +44,9 @@ public class ReceivableService {
     }
 
 
+    public List<Receivable> createReportAboutOverdueReceivables() {
+        return receivableRepository.createReportAboutOverdueReceivables();
+    }
+
+
 }

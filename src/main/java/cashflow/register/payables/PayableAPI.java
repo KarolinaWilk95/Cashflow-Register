@@ -11,15 +11,17 @@ public class PayableAPI {
 
     private Long id;
     private Long documentId;
-    private String documentNumber;
     private LocalDate issueDate;
-    private LocalDate dueDate;
+    private String documentNumber;
     private String contractorName;
+
+    private LocalDate dueDate;
     private BigDecimal totalAmount;
     private BigDecimal paymentAmount;
     private BigDecimal unpaidAmount;
-    private Currency currencyCode;
     private BigDecimal totalAmountInPln;
+
+    private Currency currencyCode;
 
 
 }
