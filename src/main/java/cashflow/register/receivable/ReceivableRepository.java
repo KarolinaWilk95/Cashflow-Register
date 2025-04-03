@@ -1,11 +1,6 @@
 package cashflow.register.receivable;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
-import org.springframework.data.jpa.domain.Specification;
+import cashflow.register.FinancialReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ReceivableRepository extends JpaRepository<Receivable, Long>, JpaSpecificationExecutor<Receivable> {
+public interface ReceivableRepository extends JpaRepository<Receivable, Long>, JpaSpecificationExecutor<Receivable>, FinancialReport<Receivable> {
 
     @Transactional
     @Modifying
@@ -29,7 +24,14 @@ public interface ReceivableRepository extends JpaRepository<Receivable, Long>, J
     Optional<Receivable> findDocument(@Param("id") Long id);
 
     @Query("select r from Receivable r where (r.document.dueDate - CURRENT_DATE) <= 0 order by r.document.dueDate")
-    List<Receivable> createReportAboutOverdueReceivables();
+    List<Receivable> createReportAboutOverdue();
 
 
+    @Query("SELECT r.document.contractorName, sum(r.document.totalAmount) AS sum from Receivable r where (r.document.dueDate - CURRENT_DATE) <= 0 group by r.document.contractorName order by sum")
+    List<String> createReportAboutOGrouped();
+
+
+
+    @Query("select r from Receivable r order by r.document.dueDate")
+    List<Receivable> createReportAging();
 }

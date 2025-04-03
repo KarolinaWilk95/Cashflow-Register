@@ -26,12 +26,12 @@ public class ReceivableService {
     }
 
     public Receivable findById(Long id) {
-        var doc = receivableRepository.findById(id);
+        var documentFromRepository = receivableRepository.findById(id);
 
-        if (doc.isEmpty()) {
+        if (documentFromRepository.isEmpty()) {
             throw new ResourceNotFoundException("Selected document not found");
         }
-        return doc.get();
+        return documentFromRepository.get();
     }
 
     public void deleteByDocumentId(Long documentId) {
@@ -45,8 +45,16 @@ public class ReceivableService {
 
 
     public List<Receivable> createReportAboutOverdueReceivables() {
-        return receivableRepository.createReportAboutOverdueReceivables();
+        return receivableRepository.createReportAboutOverdue();
     }
 
 
+    public List<String> createReportAboutOverdueReceivablesGrouped() {
+        return receivableRepository.createReportAboutOGrouped();
+    }
+
+    public List<Receivable> createReportAboutReceivablesAging() {
+
+        return receivableRepository.createReportAging();
+    }
 }

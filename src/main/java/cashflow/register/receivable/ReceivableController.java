@@ -29,10 +29,10 @@ public class ReceivableController {
 
     @PatchMapping(value = "api/receivables/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
-        var doc = receivableService.findById(id);
+        var documentFromRepository = receivableService.findById(id);
 
         try {
-            var document = applyPatchToDocument(jsonPatch, doc);
+            var document = applyPatchToDocument(jsonPatch, documentFromRepository);
             receivableService.debtEnforcement(document);
             return ResponseEntity.ok().build();
         } catch (JsonPatchException | JsonProcessingException e) {
@@ -49,10 +49,24 @@ public class ReceivableController {
     }
 
     @GetMapping("api/receivables/overdue")
-    public List<ReceivableAPI> createReportAboutOverdueReceivables(@RequestParam(name = "group", required = false) String group) {
+    public List<ReceivableAPI> createReportAboutOverdueReceivables() {
 
         var result = receivableService.createReportAboutOverdueReceivables();
 
         return result.stream().map(receivableMapper::modelToApi).toList();
     }
+
+    @GetMapping("api/receivables/overdue/grouped")
+    public List<String> createReportAboutOverdueReceivablesGrouped() {
+
+        return receivableService.createReportAboutOverdueReceivablesGrouped();
+    }
+
+    @GetMapping("api/receivables/aging")
+    public List<ReceivableAPI> createReportAboutOverdueReceivablesAging() {
+
+        return receivableService.createReportAboutReceivablesAging().stream().map(receivableMapper::modelToApi).toList();
+    }
+
+
 }

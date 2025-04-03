@@ -27,4 +27,31 @@ public class PayableService {
         payableRepository.deleteDocument(documentId);
     }
 
+    public Payable findById(Long id) {
+        var documentFromRepository = payableRepository.findById(id);
+
+        if (documentFromRepository.isEmpty()) {
+            throw new ResourceNotFoundException("Selected document not found");
+        }
+        return documentFromRepository.get();
+    }
+
+    public void debtEnforcement(Payable payable) {
+        payableRepository.save(payable);
+    }
+
+
+    public List<Payable> createReportAboutOverduePayables() {
+        return payableRepository.createReportAboutOverdue();
+    }
+
+
+    public List<String> createReportAboutOverduePayablesGrouped() {
+        return payableRepository.createReportAboutOGrouped();
+    }
+
+    public List<Payable> createReportAboutPayablesAging() {
+
+        return payableRepository.createReportAging();
+    }
 }
