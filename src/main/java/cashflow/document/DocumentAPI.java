@@ -45,7 +45,6 @@ public class DocumentAPI {
 
     private BigDecimal paymentAmount;
 
-    private BigDecimal amountDue;
 
 
 }

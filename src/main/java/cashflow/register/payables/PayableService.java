@@ -5,6 +5,7 @@ import cashflow.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -14,7 +15,7 @@ public class PayableService {
     private final PayableRepository payableRepository;
 
     public List<Payable> showAll() {
-        return payableRepository.findAll();
+        return payableRepository.findAllUnpaidDocuments();
     }
 
     public Payable addDocument(Document newDocument) {
@@ -53,5 +54,17 @@ public class PayableService {
     public List<Payable> createReportAboutPayablesAging() {
 
         return payableRepository.createReportAging();
+    }
+
+    public BigDecimal payablesSummary() {
+        return payableRepository.summary();
+    }
+
+    public List<Payable> topValues() {
+        return payableRepository.topValues();
+    }
+
+    public List<String> topContractors() {
+        return payableRepository.topContractors();
     }
 }

@@ -1,5 +1,8 @@
 package cashflow.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,4 +24,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("PROBLEM {}", ex.getMessage(), ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
 }

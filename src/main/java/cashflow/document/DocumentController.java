@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -30,7 +31,8 @@ public class DocumentController {
     private final DocumentMapper documentMapper;
     private final ObjectMapper objectMapper;
 
-    @GetMapping("api/documents")
+
+    @GetMapping("api/register/documents")
     public List<DocumentAPI> getAllDocuments(@RequestParam(name = "search", required = false) String search,
                                              @RequestParam(name = "page", defaultValue = "0") Integer page,
                                              @RequestParam(name = "size", defaultValue = "30") Integer size,
@@ -51,52 +53,47 @@ public class DocumentController {
         return result.stream().map(documentMapper::modelToApi).toList();
     }
 
-    @GetMapping("api/documents/{id}")
+    @GetMapping("api/register/documents/{id}")
     public DocumentAPI getDocumentById(@PathVariable Long id) {
         var result = documentService.findById(id);
         return documentMapper.modelToApi(result);
     }
 
-
-    @PostMapping("api/documents")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @PostMapping("api/register/documents")
     public DocumentAPI addDocument(@RequestBody DocumentAPI documentAPI) {
         Document newDocument = documentMapper.apiToModel(documentAPI);
         var result = documentService.addDocument(newDocument);
         return documentMapper.modelToApi(result);
     }
 
-    @DeleteMapping("api/documents/{id}")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @DeleteMapping("api/register/documents/{id}")
     public ResponseEntity<Void> deleteDocumentById(@PathVariable Long id) {
         documentService.deleteDocument(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("api/documents/{id}")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @PutMapping("api/register/documents/{id}")
     public ResponseEntity<Void> updateDocumentById(@PathVariable Long id, @RequestBody Document document) {
         documentService.updateDocument(id, document);
         return ResponseEntity.noContent().build();
     }
 
-
-    @PatchMapping(value = "api/documents/{id}", consumes = "application/json-patch+json")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @PatchMapping(value = "api/register/documents/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
         Optional<Document> documentOptional = Optional.ofNullable(documentService.findById(id));
-
-        if (documentOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Selected document not found");
-        }
         try {
-            Document doc = applyPatchToDocument(jsonPatch, documentOptional.get());
-            documentService.partialUpdateDocument(doc, id);
+            Document document = applyPatchToDocument(jsonPatch, documentOptional.get());
+            documentService.partialUpdateDocument(document, id);
             return ResponseEntity.noContent().build();
         } catch (JsonPatchException | JsonProcessingException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-//do Resource not found global handler
-
-        //do docu.isEmpty to robi serwis
 
     }
 
@@ -105,7 +102,7 @@ public class DocumentController {
         return objectMapper.treeToValue(patched, Document.class);
     }
 
-    @GetMapping("api/documents/filter")
+    @GetMapping("api/register/documents/filter")
     public List<DocumentAPI> filter(@RequestParam(name = "documentGroup", required = false) String documentGroup,
                                     @RequestParam(name = "documentType", required = false) String documentType,
                                     @RequestParam(name = "documentNumber", required = false) String documentNumber,
@@ -144,7 +141,6 @@ public class DocumentController {
 
 
     }
-
 
 
 }

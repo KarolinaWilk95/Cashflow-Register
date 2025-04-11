@@ -5,6 +5,7 @@ import cashflow.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -56,5 +57,17 @@ public class ReceivableService {
     public List<Receivable> createReportAboutReceivablesAging() {
 
         return receivableRepository.createReportAging();
+    }
+
+    public BigDecimal receivablesSummary() {
+        return receivableRepository.summary();
+    }
+
+    public List<Receivable> topValues() {
+        return receivableRepository.topValues();
+    }
+
+    public List<String> topContractors() {
+        return receivableRepository.topContractors();
     }
 }

@@ -109,7 +109,6 @@ public class DocumentService {
         updatedDocument.setOrderNumber(document.getOrderNumber());
         updatedDocument.setPaymentDueDate(document.getPaymentDueDate());
         updatedDocument.setPaymentAmount(document.getPaymentAmount());
-        updatedDocument.setAmountDue(document.getAmountDue());
 
         documentRepository.save(updatedDocument);
     }

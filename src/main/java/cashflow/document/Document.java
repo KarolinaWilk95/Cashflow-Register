@@ -67,8 +67,6 @@ public class Document {
     @Column
     private BigDecimal paymentAmount;
 
-    @Column
-    private BigDecimal amountDue;
 
 
 
