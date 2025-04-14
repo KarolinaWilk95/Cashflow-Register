@@ -26,7 +26,8 @@ class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST).hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION")
                         .requestMatchers(HttpMethod.PATCH).hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION")
-                        .requestMatchers("api/register/**").hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION", "MANAGEMENT"))
+                        .requestMatchers(HttpMethod.DELETE).hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION")
+                        .requestMatchers("/api/register/**").hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION", "MANAGEMENT"))
                 .build();
     }
 

@@ -18,4 +18,5 @@ public class AnalysisAPI {
     private BigDecimal payablesSummary;
     private List<Payable> payablesTopValues;
     private List<String> payablesTopContractors;
+    private BigDecimal income;
 }

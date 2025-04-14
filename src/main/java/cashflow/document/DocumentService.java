@@ -7,7 +7,6 @@ import cashflow.exception.ResourceNotFoundException;
 import cashflow.register.payables.PayableService;
 import cashflow.register.receivable.ReceivableService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,14 +28,14 @@ public class DocumentService {
     private final DocumentFilterRequestRepository documentFilterRequestRepository;
 
 
-    public Page<Document> getAllDocuments(Pageable pageable) {
-        return documentRepository.findAll(pageable);
+    public List<Document> getAllDocuments(Pageable pageable) {
+        return documentRepository.findAll(pageable).stream().toList();
     }
 
 
-    public Page<Document> getAllDocumentsByValue(Pageable pageable, String search) {
+    public List<Document> getAllDocumentsByValue(Pageable pageable, String search) {
 
-        return documentRepository.findAllDocuments(search, pageable);
+        return documentRepository.findAllDocuments(search, pageable).stream().toList();
 
     }
 
@@ -82,7 +81,6 @@ public class DocumentService {
         }
 
         documentRepository.deleteById(id);
-
     }
 
     @Transactional

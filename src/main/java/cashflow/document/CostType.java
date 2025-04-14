@@ -1,5 +1,0 @@
-package cashflow.document;
-
-public enum CostType {
-    OPERATING, INVESTMENT, FINANCIAL, PERSONNEL, MATERIAL, MARKETING, TRANSPORT, ADMINISTRATIVE, TAX
-}

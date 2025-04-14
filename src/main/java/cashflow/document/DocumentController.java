@@ -44,9 +44,9 @@ public class DocumentController {
         List<Document> result;
 
         if (search != null) {
-            result = documentService.getAllDocumentsByValue(pageable, search).stream().toList();
+            result = documentService.getAllDocumentsByValue(pageable, search);
         } else {
-            result = documentService.getAllDocuments(pageable).stream().toList();
+            result = documentService.getAllDocuments(pageable);
         }
 
 
@@ -85,21 +85,20 @@ public class DocumentController {
     @PatchMapping(value = "api/register/documents/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
         Optional<Document> documentOptional = Optional.ofNullable(documentService.findById(id));
-        try {
-            Document document = applyPatchToDocument(jsonPatch, documentOptional.get());
-            documentService.partialUpdateDocument(document, id);
-            return ResponseEntity.noContent().build();
-        } catch (JsonPatchException | JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
+        applyPatchToDocument(jsonPatch, documentOptional.get(), id);
+        return ResponseEntity.noContent().build();
     }
 
-    private Document applyPatchToDocument(JsonPatch patch, Document document) throws JsonPatchException, JsonProcessingException {
-        JsonNode patched = patch.apply(objectMapper.convertValue(document, JsonNode.class));
-        return objectMapper.treeToValue(patched, Document.class);
+    private void applyPatchToDocument(JsonPatch patch, Document document, Long id){
+        try {
+            documentService.partialUpdateDocument(document, id);
+            JsonNode patched = patch.apply(objectMapper.convertValue(document, JsonNode.class));
+            objectMapper.treeToValue(patched, Document.class);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (ResourceNotFoundException e) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("api/register/documents/filter")

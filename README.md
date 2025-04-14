@@ -17,6 +17,10 @@ In this application are available roles:
 * CONTROLLING
 * MANAGEMENT
 
+### Example path to generate token ###
+
+`/api/token?username=Karolina&roles=CONTROLLING`
+
 #### Example to use PatchMapping:
 
 ```courseignore
@@ -33,34 +37,34 @@ In this application are available roles:
 
 1. Overdue receivables report - show receivables that have not been paid on time
 
-*/api/receivables/overdue*
+`/api/register/receivables/overdue`
 
 2. Overdue receivables group by contactors report - show receivables that have not been paid on time but group by
    contactor name and sum up all unpaid invoices
 
-*/api/receivables/overdue/grouped*
+`/api/register/receivables/overdue/grouped`
 
 3. Aging report - sort receivables bu due date, helping to assess the risk of counterparty default.
 
-*api/receivables/aging*
+`api/register/receivables/aging`
 
 
 4. Overdue payables report - show payables that have not been paid on time
 
-*/api/payables/overdue*
+`/api/register/payables/overdue`
 
 5. Overdue payables group by contactors report - show payables that have not been paid on time but group by
    contactor name and sum up all unpaid invoices
 
-*/api/payables/overdue/grouped*
+`/api/register/payables/overdue/grouped`
 
 6. Aging report - sort payables by due date, helping to assess the risk of counterparty default.
 
-*api/payables/aging*
+`api/register/payables/aging`
 
 7. Summary report -  displays information about the receivables and payables summary, the 3 highest-value documents, and the 3 most indebted or creditor contractors.
 
-*api/register/analysis*
+`api/register`
 
 
 ## Getting started: ##
