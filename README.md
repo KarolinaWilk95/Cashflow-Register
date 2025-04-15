@@ -17,6 +17,10 @@ In this application are available roles:
 * CONTROLLING
 * MANAGEMENT
 
+To work with hardcoded data in the project, I used currency purchase rate: 
+* USD -> 3,78 PLN
+* EUR -> 4,28 PLN
+
 ### Example path to generate token ###
 
 `/api/token?username=Karolina&roles=CONTROLLING`

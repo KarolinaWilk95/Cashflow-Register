@@ -55,13 +55,10 @@ public class DocumentService {
         Document savedDocument = new Document();
         String currencyCode = String.valueOf(newDocument.getCurrencyCode());
 
-        if (CURRENCY_CODE_PLN.equals(currencyCode)) {
-            savedDocument = saveDocument(newDocument);
-
-        } else {
+        if (!CURRENCY_CODE_PLN.equals(currencyCode)) {
             newDocument.setTotalAmountInPln(converterService.purchaseRate(newDocument.getCurrencyCode(), newDocument.getTotalAmount()));
-            savedDocument = saveDocument(newDocument);
         }
+        savedDocument = saveDocument(newDocument);
         return savedDocument;
     }
 

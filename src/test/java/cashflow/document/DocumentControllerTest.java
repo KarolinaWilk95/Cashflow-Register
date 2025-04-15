@@ -116,7 +116,7 @@ class DocumentControllerTest {
 
     @Test
     @WithMockUser
-    void getDocumentByIdIfValid() {
+    void getDocumentByIdIfExist() {
         //given
         Long id = 1L;
         DocumentAPI documentAPI = new DocumentAPI();
@@ -138,7 +138,7 @@ class DocumentControllerTest {
     }
 
     @Test
-    void getDocumentByIdIfNotValid() {
+    void getDocumentByIdIfNotExist() {
         //given
         Long id = -1L;
         DocumentAPI documentAPI = new DocumentAPI();
