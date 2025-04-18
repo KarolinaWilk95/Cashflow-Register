@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +62,7 @@ public class DocumentController {
 
     @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
     @PostMapping("api/register/documents")
-    public DocumentAPI addDocument(@RequestBody DocumentAPI documentAPI) {
+    public DocumentAPI addDocument(@Valid @RequestBody DocumentAPI documentAPI) {
         Document newDocument = documentMapper.apiToModel(documentAPI);
         var result = documentService.addDocument(newDocument);
         return documentMapper.modelToApi(result);

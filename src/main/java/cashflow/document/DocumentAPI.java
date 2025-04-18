@@ -29,7 +29,7 @@ public class DocumentAPI {
 
     private String contractorName;
 
-    private Long contractorVATNumber;
+    private Long contractorVatNumber;
 
     private BigDecimal amount;
 

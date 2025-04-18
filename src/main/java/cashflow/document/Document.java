@@ -2,6 +2,8 @@ package cashflow.document;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,19 +25,24 @@ public class Document {
 
     @Column
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "DocumentGroup is mandatory")
     private DocumentGroup documentGroup;
 
     @Column
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "DocumentType is mandatory")
     private DocumentType documentType;
 
     @Column
+    @NotBlank(message = "Document number is mandatory")
     private String documentNumber;
 
     @Column
+    @NotNull(message = "Sale date is mandatory")
     private LocalDate saleDate;
 
     @Column
+    @NotNull(message = "Issue date is mandatory")
     private LocalDate issueDate;
 
     @Column
@@ -45,6 +52,7 @@ public class Document {
     private String contractorName;
 
     @Column
+    @NotNull(message = "Contractor VAT number is mandatory")
     private Long contractorVatNumber;
 
     @Column
@@ -60,6 +68,7 @@ public class Document {
     private BigDecimal totalAmountInPln;
 
     @Column
+    @NotNull(message = "Currency is mandatory")
     private Currency currencyCode;
 
     @Column
@@ -70,8 +79,6 @@ public class Document {
 
     @Column
     private BigDecimal paymentAmount;
-
-
 
 
 }
