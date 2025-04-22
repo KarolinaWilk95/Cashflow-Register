@@ -20,70 +20,70 @@ public class DocumentFilterRequestRepository {
     private final EntityManager entityManager;
 
 
-    public List<Document> findByCriteria(DocumentFilterRequest DocumentFilterRequest) {
+    public List<Document> findByCriteria(DocumentFilterRequest documentFilterRequest) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Document> criteriaQuery = criteriaBuilder.createQuery(Document.class);
         List<Predicate> predicates = new ArrayList<>();
         Root<Document> root = criteriaQuery.from(Document.class);
 
-        if (DocumentFilterRequest.getDocumentGroup() != null) {
-            Predicate documentGroupPredicate = criteriaBuilder.like(root.get("documentGroup"), "%" + DocumentFilterRequest.getDocumentGroup() + "%");
+        if (documentFilterRequest.getDocumentGroup() != null) {
+            Predicate documentGroupPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("documentGroup")), "%" + documentFilterRequest.getDocumentGroup().toLowerCase() + "%");
             predicates.add(documentGroupPredicate);
         }
-        if (DocumentFilterRequest.getDocumentType() != null) {
-            Predicate documentTypePredicate = criteriaBuilder.like(root.get("documentType"), "%" + DocumentFilterRequest.getDocumentType() + "%");
+        if (documentFilterRequest.getDocumentType() != null) {
+            Predicate documentTypePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("documentType")), "%" + documentFilterRequest.getDocumentType().toLowerCase() + "%");
             predicates.add(documentTypePredicate);
         }
-        if (DocumentFilterRequest.getDocumentNumber() != null) {
-            Predicate documentNumberPredicate = criteriaBuilder.like(root.get("documentNumber"), "%" + DocumentFilterRequest.getDocumentNumber() + "%");
+        if (documentFilterRequest.getDocumentNumber() != null) {
+            Predicate documentNumberPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("documentNumber")), "%" + documentFilterRequest.getDocumentNumber().toLowerCase() + "%");
             predicates.add(documentNumberPredicate);
         }
-        if (DocumentFilterRequest.getIssueDate() != null) {
-            Predicate issueDatePredicate = criteriaBuilder.like(root.get("issueDate"), "%" + DocumentFilterRequest.getIssueDate() + "%");
+        if (documentFilterRequest.getIssueDate() != null) {
+            Predicate issueDatePredicate = criteriaBuilder.like(root.get("issueDate"), "%" + documentFilterRequest.getIssueDate() + "%");
             predicates.add(issueDatePredicate);
         }
-        if (DocumentFilterRequest.getDueDate() != null) {
-            Predicate dueDatePredicate = criteriaBuilder.like(root.get("dueDate"), "%" + DocumentFilterRequest.getDueDate() + "%");
+        if (documentFilterRequest.getDueDate() != null) {
+            Predicate dueDatePredicate = criteriaBuilder.like(root.get("dueDate"), "%" + documentFilterRequest.getDueDate() + "%");
             predicates.add(dueDatePredicate);
         }
-        if (DocumentFilterRequest.getContractorName() != null) {
-            Predicate contractorNamePredicate = criteriaBuilder.like(root.get("contractorName"), "%" + DocumentFilterRequest.getContractorName() + "%");
+        if (documentFilterRequest.getContractorName() != null) {
+            Predicate contractorNamePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("contractorName")), "%" + documentFilterRequest.getContractorName().toLowerCase() + "%");
             predicates.add(contractorNamePredicate);
         }
-        if (DocumentFilterRequest.getContractorVatNumber() != null) {
-            Predicate contractorVATNumberPredicate = criteriaBuilder.equal(root.get("contractorVATNumber"), DocumentFilterRequest.getContractorVatNumber());
+        if (documentFilterRequest.getContractorVatNumber() != null) {
+            Predicate contractorVATNumberPredicate = criteriaBuilder.equal(root.get("contractorVATNumber"), documentFilterRequest.getContractorVatNumber());
             predicates.add(contractorVATNumberPredicate);
         }
-        if (DocumentFilterRequest.getAmount() != null) {
-            Predicate amountPredicate = criteriaBuilder.equal(root.get("amount"), DocumentFilterRequest.getAmount());
+        if (documentFilterRequest.getAmount() != null) {
+            Predicate amountPredicate = criteriaBuilder.equal(root.get("amount"), documentFilterRequest.getAmount());
             predicates.add(amountPredicate);
         }
-        if (DocumentFilterRequest.getGreaterThanAmount() != null) {
-            Predicate greaterThanOrEqualToThanAmountPredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("amount"), DocumentFilterRequest.getGreaterThanAmount());
+        if (documentFilterRequest.getGreaterThanAmount() != null) {
+            Predicate greaterThanOrEqualToThanAmountPredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("amount"), documentFilterRequest.getGreaterThanAmount());
             predicates.add(greaterThanOrEqualToThanAmountPredicate);
         }
-        if (DocumentFilterRequest.getLessThanAmount() != null) {
-            Predicate lessThanOrEqualtoThanAmountPredicate = criteriaBuilder.lessThanOrEqualTo(root.get("amount"), DocumentFilterRequest.getLessThanAmount());
+        if (documentFilterRequest.getLessThanAmount() != null) {
+            Predicate lessThanOrEqualtoThanAmountPredicate = criteriaBuilder.lessThanOrEqualTo(root.get("amount"), documentFilterRequest.getLessThanAmount());
             predicates.add(lessThanOrEqualtoThanAmountPredicate);
         }
-        if (DocumentFilterRequest.getTotalAmount() != null) {
-            Predicate totalAmountPredicate = criteriaBuilder.equal(root.get("totalAmount"), DocumentFilterRequest.getTotalAmount());
+        if (documentFilterRequest.getTotalAmount() != null) {
+            Predicate totalAmountPredicate = criteriaBuilder.equal(root.get("totalAmount"), documentFilterRequest.getTotalAmount());
             predicates.add(totalAmountPredicate);
         }
-        if (DocumentFilterRequest.getLessThanTotalAmount() != null) {
-            Predicate lessThanTotalAmountPredicate = criteriaBuilder.lessThanOrEqualTo(root.get("totalAmount"), DocumentFilterRequest.getLessThanTotalAmount());
+        if (documentFilterRequest.getLessThanTotalAmount() != null) {
+            Predicate lessThanTotalAmountPredicate = criteriaBuilder.lessThanOrEqualTo(root.get("totalAmount"), documentFilterRequest.getLessThanTotalAmount());
             predicates.add(lessThanTotalAmountPredicate);
         }
-        if (DocumentFilterRequest.getGreaterThanTotalAmount() != null) {
-            Predicate greaterThanOrEqualtoThanAmountPredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("totalAmount"), DocumentFilterRequest.getGreaterThanTotalAmount());
+        if (documentFilterRequest.getGreaterThanTotalAmount() != null) {
+            Predicate greaterThanOrEqualtoThanAmountPredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("totalAmount"), documentFilterRequest.getGreaterThanTotalAmount());
             predicates.add(greaterThanOrEqualtoThanAmountPredicate);
         }
-        if (DocumentFilterRequest.getCurrencyCode() != null) {
-            Predicate currencyCodePredicate = criteriaBuilder.equal(root.get("currencyCode"), DocumentFilterRequest.getCurrencyCode());
+        if (documentFilterRequest.getCurrencyCode() != null) {
+            Predicate currencyCodePredicate = criteriaBuilder.equal(root.get("currencyCode"), documentFilterRequest.getCurrencyCode());
             predicates.add(currencyCodePredicate);
         }
-        if (DocumentFilterRequest.getOrderNumber() != null) {
-            Predicate orderNumberPredicate = criteriaBuilder.like(root.get("orderNumber"), "%" + DocumentFilterRequest.getOrderNumber() + "%");
+        if (documentFilterRequest.getOrderNumber() != null) {
+            Predicate orderNumberPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("orderNumber")), "%" + documentFilterRequest.getOrderNumber().toLowerCase() + "%");
             predicates.add(orderNumberPredicate);
         }
 

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -84,17 +83,18 @@ public class DocumentController {
 
     @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
     @PatchMapping(value = "api/register/documents/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
-        Optional<Document> documentOptional = Optional.ofNullable(documentService.findById(id));
-        applyPatchToDocument(jsonPatch, documentOptional.get(), id);
+    public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) throws JsonProcessingException {
+        Document documentFromRepository = documentService.findById(id);
+        applyPatchToDocument(jsonPatch, documentFromRepository, id);
+
         return ResponseEntity.noContent().build();
     }
 
-    private void applyPatchToDocument(JsonPatch patch, Document document, Long id){
+    private void applyPatchToDocument(JsonPatch patch, Document document, Long id) {
         try {
-            documentService.partialUpdateDocument(document, id);
             JsonNode patched = patch.apply(objectMapper.convertValue(document, JsonNode.class));
-            objectMapper.treeToValue(patched, Document.class);
+            Document documentUpdated = objectMapper.treeToValue(patched, Document.class);
+            documentService.partialUpdateDocument(documentUpdated, id);
         } catch (JsonPatchException | JsonProcessingException e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (ResourceNotFoundException e) {

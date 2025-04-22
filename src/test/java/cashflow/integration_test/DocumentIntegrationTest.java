@@ -12,10 +12,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -25,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,38 +39,45 @@ public class DocumentIntegrationTest {
     DocumentRepository documentRepository;
     @Autowired
     JwtService jwtService;
-    @Autowired
-    DocumentMapper documentMapper;
 
 
     public HttpEntity<String> authorization() {
         String token = jwtService.generateToken("test", List.of("CONTROLLING"));
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
-        return entity;
+        return new HttpEntity<>("body", headers);
     }
-    public HttpEntity<DocumentAPI> authorizationWithBody(DocumentAPI documentAPI) {
+
+    public <T> HttpEntity<T> authorizationWithBody(T body) {
         String token = jwtService.generateToken("test", List.of("CONTROLLING"));
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        HttpEntity<DocumentAPI> entity = new HttpEntity<>(documentAPI, headers);
-        return entity;
+        headers.setContentType(MediaType.valueOf("application/json-patch+json"));
+        return new HttpEntity<>(body, headers);
     }
+
+    public <T> HttpEntity<T> authorizationWithBodyJson(T body) {
+        String token = jwtService.generateToken("test", List.of("CONTROLLING"));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.valueOf("application/json-patch+json"));
+        return new HttpEntity<>(body, headers);
+    }
+
     public HttpEntity<String> authorizationForManagement() {
         String token = jwtService.generateToken("test", List.of("MANAGEMENT"));
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        HttpEntity<String> entity = new HttpEntity<>("body", headers);
-        return entity;
+        return new HttpEntity<>("body", headers);
     }
+
     public HttpEntity<DocumentAPI> authorizationForManagementWithBody(DocumentAPI documentAPI) {
         String token = jwtService.generateToken("test", List.of("MANAGEMENT"));
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-        HttpEntity<DocumentAPI> entity = new HttpEntity<>(documentAPI, headers);
-        return entity;
+        return new HttpEntity<>(documentAPI, headers);
     }
+
 
     @BeforeEach
     void setUp() {
@@ -165,6 +170,7 @@ public class DocumentIntegrationTest {
         assertThat(result.getBody().getId()).isEqualTo(id);
         assertThat(result.getBody().getDocumentNumber()).isEqualTo("244/F/2025");
     }
+
     @Test
     void getDocumentByIdIfNotExist() {
         //given
@@ -200,6 +206,7 @@ public class DocumentIntegrationTest {
         //then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+
     @Test
     void addDocumentInvalidRoleValidData() {
         //given
@@ -210,5 +217,99 @@ public class DocumentIntegrationTest {
 
         //then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    void deleteDocumentByValidIdValidRole() {
+        //given
+        Long id = documentRepository.findAll().getFirst().getId();
+
+        //when
+        var result = restTemplate.exchange("/api/register/documents/" + id, HttpMethod.DELETE, authorization(), Void.class);
+
+        //then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(documentRepository.findById(id)).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    void deleteDocumentByInvalidIdValidRole() {
+        //given
+        int id = -1;
+
+        //when
+        var result = restTemplate.exchange("/api/register/documents/" + id, HttpMethod.DELETE, authorization(), Void.class);
+
+        //then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void deleteDocumentByValidIdInvalidRole() {
+        //given
+        Long id = documentRepository.findAll().getFirst().getId();
+
+        //when
+        var result = restTemplate.exchange("/api/register/documents/" + id, HttpMethod.DELETE, authorizationForManagement(), Void.class);
+
+        //then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    void partialUpdateDocumentValidRole() {
+        //given
+        Long id = documentRepository.findAll().getFirst().getId();
+        Document document = documentRepository.findById(id).get();
+        String patchStr = """
+                    [
+                        { "op": "replace", "path": "/paymentAmount", "value": 200 }
+                    ]
+                """;
+        HttpEntity<String> httpEntity = authorizationWithBodyJson(patchStr);
+
+        //when
+        var result = restTemplate.exchange("/api/register/documents/" + id, HttpMethod.PATCH, httpEntity, Void.class);
+
+        var updatedDocument = restTemplate.exchange("/api/register/documents/" + id, HttpMethod.GET, authorization(), Document.class);
+
+        //then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(updatedDocument.getBody().getPaymentAmount()).isEqualTo(BigDecimal.valueOf(200));
+    }
+
+    @Test
+    void filterDocumentsValidRole() {
+        //given
+        String request = "contractorName=biedronka";
+        Document document = new Document(null, DocumentGroup.COST, DocumentType.INVOICE, "fv uproszczona", LocalDate.of(2025, 2, 11), LocalDate.of(2025, 2, 11), LocalDate.of(2025, 2, 11), "BIEDRONKA", 7791011327L, BigDecimal.valueOf(100), BigDecimal.valueOf(2), BigDecimal.valueOf(102), BigDecimal.valueOf(102), Currency.getInstance("PLN"), "", null, BigDecimal.valueOf(102));
+        DocumentAPI documentAPI = new DocumentAPI(null, DocumentGroup.COST, DocumentType.INVOICE, "fv uproszczona", LocalDate.of(2025, 2, 11), LocalDate.of(2025, 2, 11), LocalDate.of(2025, 2, 11), "BIEDRONKA", 7791011327L, BigDecimal.valueOf(100), BigDecimal.valueOf(2), BigDecimal.valueOf(102), BigDecimal.valueOf(102), Currency.getInstance("PLN"), "", null, BigDecimal.valueOf(102));
+        documentRepository.save(document);
+        List<DocumentAPI> list = new ArrayList<>();
+        list.add(documentAPI);
+
+        //when
+        var result = restTemplate.exchange("/api/register/documents/filter?" + request, HttpMethod.GET, authorization(), new ParameterizedTypeReference<List<DocumentAPI>>() {
+        });
+
+        //then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().size()).isEqualTo(list.size());
+        assertThat(result.getBody().getFirst().getContractorVatNumber()).isEqualTo(7791011327L);
+    }
+
+    @Test
+    void filterNoMatch(){
+        //given
+        String request = "contractorName=biedronka";
+
+        //when
+        var result = restTemplate.exchange("/api/register/documents/filter?" + request, HttpMethod.GET, authorization(), new ParameterizedTypeReference<List<DocumentAPI>>() {
+        });
+
+        //then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody().size()).isEqualTo(0);
+
     }
 }

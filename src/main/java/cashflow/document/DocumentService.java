@@ -116,9 +116,11 @@ public class DocumentService {
     @Transactional
     public void partialUpdateDocument(Document document, Long id) {
         var documentFromRepository = documentRepository.findById(id);
-        if (documentFromRepository.isPresent()) {
-            documentRepository.save(document);
+        if (documentFromRepository.isEmpty()) {
+            throw new ResourceNotFoundException("Selected document not found");
         }
+        document.setId(id);
+        documentRepository.save(document);
     }
 
 
