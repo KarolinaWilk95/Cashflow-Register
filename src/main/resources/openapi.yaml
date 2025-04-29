@@ -8,9 +8,11 @@ info:
   contact:
     name: Karolina Wilk
     email: kar.wojcik95@gmail.com
-    url: www.linkedin.com/in/karwojcik95
+    url: https://www.linkedin.com/in/karwojcik95
 servers:
   - url: http://localhost:8080/api
+security:
+  - bearerHttpAuthentication: [ ]
 tags:
   - name: analysis
   - name: document
@@ -222,7 +224,7 @@ paths:
               example: [ {
                 "op": "replace",
                 "path": "/paymentAmount",
-                "value": 2000
+                "value": "2000"
               } ]
       responses:
         '204':
@@ -542,6 +544,7 @@ paths:
           required: true
           schema:
             type: string
+            enum: [MANAGEMENT, DOCUMENT_CIRCULATION, CONTROLLING]
       responses:
         '200':
           description: The token is generated correctly
