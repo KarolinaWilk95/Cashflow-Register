@@ -27,11 +27,13 @@ public class DocumentFilterRequestRepository {
         Root<Document> root = criteriaQuery.from(Document.class);
 
         if (documentFilterRequest.getDocumentGroup() != null) {
-            Predicate documentGroupPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("documentGroup")), "%" + documentFilterRequest.getDocumentGroup().toLowerCase() + "%");
+            var doc_group = String.valueOf(root.get("documentGroup"));
+            var enum_doc_group = documentFilterRequest.getDocumentGroup();
+            Predicate documentGroupPredicate = criteriaBuilder.like(root.get("documentGroup").as(String.class), enum_doc_group);
             predicates.add(documentGroupPredicate);
         }
         if (documentFilterRequest.getDocumentType() != null) {
-            Predicate documentTypePredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("documentType")), "%" + documentFilterRequest.getDocumentType().toLowerCase() + "%");
+            Predicate documentTypePredicate = criteriaBuilder.equal(root.get("documentType"), documentFilterRequest.getDocumentType());
             predicates.add(documentTypePredicate);
         }
         if (documentFilterRequest.getDocumentNumber() != null) {
@@ -51,7 +53,7 @@ public class DocumentFilterRequestRepository {
             predicates.add(contractorNamePredicate);
         }
         if (documentFilterRequest.getContractorVatNumber() != null) {
-            Predicate contractorVATNumberPredicate = criteriaBuilder.equal(root.get("contractorVATNumber"), documentFilterRequest.getContractorVatNumber());
+            Predicate contractorVATNumberPredicate = criteriaBuilder.equal(root.get("contractorVatNumber"), documentFilterRequest.getContractorVatNumber());
             predicates.add(contractorVATNumberPredicate);
         }
         if (documentFilterRequest.getAmount() != null) {

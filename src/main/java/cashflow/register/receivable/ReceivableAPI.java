@@ -1,15 +1,14 @@
 package cashflow.register.receivable;
 
-import cashflow.document.Document;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.Currency;
 
 @Data
+@AllArgsConstructor
 public class ReceivableAPI {
 
     private Long id;

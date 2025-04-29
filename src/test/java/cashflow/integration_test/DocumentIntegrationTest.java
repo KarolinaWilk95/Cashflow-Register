@@ -260,7 +260,6 @@ public class DocumentIntegrationTest {
     void partialUpdateDocumentValidRole() {
         //given
         Long id = documentRepository.findAll().getFirst().getId();
-        Document document = documentRepository.findById(id).get();
         String patchStr = """
                     [
                         { "op": "replace", "path": "/paymentAmount", "value": 200 }
@@ -271,7 +270,7 @@ public class DocumentIntegrationTest {
         //when
         var result = restTemplate.exchange("/api/register/documents/" + id, HttpMethod.PATCH, httpEntity, Void.class);
 
-        var updatedDocument = restTemplate.exchange("/api/register/documents/" + id, HttpMethod.GET, authorization(), Document.class);
+        var updatedDocument = restTemplate.exchange("/api/register/documents/" + id, HttpMethod.GET, authorization(), DocumentAPI.class);
 
         //then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

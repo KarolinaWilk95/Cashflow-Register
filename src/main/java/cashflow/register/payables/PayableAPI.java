@@ -1,5 +1,6 @@
 package cashflow.register.payables;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Currency;
 
 @Data
+@AllArgsConstructor
 public class PayableAPI {
 
     private Long id;

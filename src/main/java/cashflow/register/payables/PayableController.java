@@ -1,15 +1,10 @@
 package cashflow.register.payables;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fge.jsonpatch.JsonPatch;
-import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -28,28 +23,14 @@ public class PayableController {
         return list.stream().map(payableMapper::modelToApi).toList();
     }
 
-    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
-    @PatchMapping(value = "api/register/payables/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
-        var documentFromRepository = payableService.findById(id);
-
-        try {
-            var document = applyPatchToDocument(jsonPatch, documentFromRepository);
-            payableService.debtEnforcement(document);
-            return ResponseEntity.ok().build();
-        } catch (JsonPatchException | JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-    }
-
-    private Payable applyPatchToDocument(JsonPatch patch, Payable payable) throws JsonPatchException, JsonProcessingException {
-        JsonNode patched = patch.apply(objectMapper.convertValue(payable, JsonNode.class));
-        return objectMapper.treeToValue(patched, Payable.class);
+    @GetMapping("api/register/payables/{id}")
+    public PayableAPI findById(@PathVariable Long id) {
+        var payable = payableService.findById(id);
+        return payableMapper.modelToApi(payable);
     }
 
     @GetMapping("api/register/payables/overdue")
-    public List<PayableAPI> createReportAboutOverdueReceivables() {
+    public List<PayableAPI> createReportAboutOverduePayables() {
 
         var result = payableService.createReportAboutOverduePayables();
 
@@ -57,13 +38,13 @@ public class PayableController {
     }
 
     @GetMapping("api/register/payables/overdue/grouped")
-    public List<String> createReportAboutOverdueReceivablesGrouped() {
+    public List<String> createReportAboutOverduePayablesGrouped() {
 
         return payableService.createReportAboutOverduePayablesGrouped();
     }
 
     @GetMapping("api/register/payables/aging")
-    public List<PayableAPI> createReportAboutOverdueReceivablesAging() {
+    public List<PayableAPI> createReportAboutOverduePayablesAging() {
 
         return payableService.createReportAboutPayablesAging().stream().map(payableMapper::modelToApi).toList();
     }

@@ -2,11 +2,15 @@ package cashflow.register.receivable;
 
 import cashflow.document.Document;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "receivables")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Receivable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +18,7 @@ public class Receivable {
     private Long id;
 
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @JoinColumn(name = "document_id")
     private Document document;
 
@@ -24,3 +28,6 @@ public class Receivable {
     @Column
     private String demandForPaymentNumber;
 }
+
+
+//(cascade = CascadeType.ALL, orphanRemoval = true)

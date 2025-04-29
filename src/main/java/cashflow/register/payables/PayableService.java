@@ -18,10 +18,10 @@ public class PayableService {
         return payableRepository.findAllUnpaidDocuments();
     }
 
-    public Payable addDocument(Document newDocument) {
+    public void addDocument(Document newDocument) {
         Payable payable = new Payable();
         payable.setDocument(newDocument);
-        return payableRepository.save(payable);
+        payableRepository.save(payable);
     }
 
     public void deleteByDocumentId(Long documentId) {
@@ -36,11 +36,6 @@ public class PayableService {
         }
         return documentFromRepository.get();
     }
-
-    public void debtEnforcement(Payable payable) {
-        payableRepository.save(payable);
-    }
-
 
     public List<Payable> createReportAboutOverduePayables() {
         return payableRepository.createReportAboutOverdue();

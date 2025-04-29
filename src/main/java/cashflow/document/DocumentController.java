@@ -83,7 +83,7 @@ public class DocumentController {
 
     @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
     @PatchMapping(value = "api/register/documents/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) throws JsonProcessingException {
+    public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
         Document documentFromRepository = documentService.findById(id);
         applyPatchToDocument(jsonPatch, documentFromRepository, id);
 
@@ -109,7 +109,7 @@ public class DocumentController {
                                     @RequestParam(name = "issueDate", required = false) LocalDate issueDate,
                                     @RequestParam(name = "dueDate", required = false) LocalDate dueDate,
                                     @RequestParam(name = "contractorName", required = false) String contractorName,
-                                    @RequestParam(name = "contractorVATNumber", required = false) Long contractorVATNumber,
+                                    @RequestParam(name = "contractorVatNumber", required = false) Long contractorVatNumber,
                                     @RequestParam(name = "amount", required = false) BigDecimal amount,
                                     @RequestParam(name = "lessThanAmount", required = false) BigDecimal lessThanAmount,
                                     @RequestParam(name = "greaterThanAmount", required = false) BigDecimal greaterThanAmount,
@@ -125,7 +125,7 @@ public class DocumentController {
         documentSearchRequest.setIssueDate(issueDate);
         documentSearchRequest.setDueDate(dueDate);
         documentSearchRequest.setContractorName(contractorName);
-        documentSearchRequest.setContractorVatNumber(contractorVATNumber);
+        documentSearchRequest.setContractorVatNumber(contractorVatNumber);
         documentSearchRequest.setAmount(amount);
         documentSearchRequest.setGreaterThanAmount(greaterThanAmount);
         documentSearchRequest.setLessThanAmount(lessThanAmount);

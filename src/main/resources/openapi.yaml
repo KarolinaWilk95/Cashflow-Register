@@ -1,0 +1,729 @@
+openapi: "3.1.0"
+info:
+  title: Cashflow Register API
+  version: "1.0"
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /register:
+    get:
+      summary: Summary of receivables and payables, 3 most valuable documents and contractors  from each category
+      operationId: analysis
+      tags:
+        - analysis
+      responses:
+        '200':
+          description: List of summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisAPI'
+
+
+  /register/documents:
+    get:
+      summary: Get all documents with optional search by any phrase, specify the page number and page size, and choose the column and sorting direction
+      operationId: getAllDocuments
+      tags:
+        - document
+      parameters:
+        - name: search
+          in: query
+          description: Search with any phrase
+          required: false
+          schema:
+            type: string
+          example: fundacja
+        - name: page
+          in: query
+          description: Specify a page number
+          required: true
+          schema:
+            type: integer
+            default: 0
+          example: 1
+        - name: size
+          in: query
+          description: Specify a number of records on page
+          required: true
+          schema:
+            type: integer
+            default: 30
+          example: 100
+        - name: sortBy
+          in: query
+          description: Specify a column to sort by results
+          required: true
+          schema:
+            type: string
+            default: id
+          example: contractorName
+        - name: wayOfSorting
+          in: query
+          description: Specify way of sorting, ascending or descending
+          required: true
+          schema:
+            type: string
+            default: asc
+          example: asc, desc
+      responses:
+        '200':
+          description: List of documents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentAPI'
+    post:
+      summary: Add new document to repository
+      operationId: addDocument
+      tags:
+        - document
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentAPI'
+            example: {
+              "documentGroup": "COST",
+              "documentType": "BILL",
+              "documentNumber": "1/12/2024",
+              "contractorVatNumber": 9299,
+              "saleDate": "2025-03-13",
+              "issueDate": "2025-03-13",
+              "amount": 200.00,
+              "taxAmount": 4.60,
+              "totalAmount": 200.00,
+              "currencyCode": "EUR",
+              "orderNumber": "nth",
+              "paymentDueDate": "2025-03-13",
+              "paymentAmount": 199.00,
+              "amountDue": 199.00
+            }
+      responses:
+        '200':
+          description: Document created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentAPI'
+
+  /register/documents/{id}:
+    get:
+      summary: Get a document by ID
+      operationId: getDocumentById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Document found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentAPI'
+        '404':
+          description: Document not found
+
+    delete:
+      summary: Delete document by ID
+      operationId: deleteDocumentById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Document found and deleted
+        '404':
+          description: Document not found
+    put:
+      summary: Update document by ID
+      operationId: updateDocumentById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+      responses:
+        '204':
+          description: Document found and updated
+        '404':
+          description: Document not found
+
+    patch:
+      summary: Update only part of document
+      operationId: partialUpdateDocument
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  op:
+                    type: string
+                    example: replace
+                  path:
+                    type: string
+                    example: /field
+                  value:
+                    type: string
+              example: [ {
+                "op": "replace",
+                "path": "/paymentAmount",
+                "value": 2000
+              } ]
+      responses:
+        '204':
+          description: Document found and partially updated
+        '400':
+          description: Invalid content exception
+        '404':
+          description: Document not found
+
+
+  /register/documents/filter:
+    get:
+      summary: List of filter results by specify various columns and value
+      operationId: filter
+      parameters:
+        - name: documentGroup
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: documentType
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: documentNumber
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: issueDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: dueDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: contractorName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: contractorVATNumber
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: amount
+          in: query
+          required: false
+          schema:
+            type: number
+            format: decimal
+        - name: lessThanAmount
+          in: query
+          required: false
+          schema:
+            type: number
+            format: decimal
+        - name: greaterThanAmount
+          in: query
+          required: false
+          schema:
+            type: number
+            format: decimal
+        - name: totalAmount
+          in: query
+          required: false
+          schema:
+            type: number
+            format: decimal
+        - name: lessThanTotalAmount
+          in: query
+          required: false
+          schema:
+            type: number
+            format: decimal
+        - name: greaterThanTotalAmount
+          in: query
+          required: false
+          schema:
+            type: number
+            format: decimal
+        - name: currencyCode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: orderNumber
+          in: query
+          required: false
+          schema:
+            type: string
+          example:
+      responses:
+        '200':
+          description: List of results after data extraction
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DocumentAPI'
+
+  /register/receivables:
+    get:
+      summary: Get all receivables that are sales documents and not fully paid
+      operationId: showAll
+      responses:
+        '200':
+          description: Get list of all receivables
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceivableAPI'
+
+  /register/receivables/{id}:
+    get:
+      summary: Find receivable by ID
+      operationId: findById
+      parameters:
+        - name: id
+          description: ID of searching receivable
+          required: true
+          schema:
+            type: integer
+          in: path
+      responses:
+        '200':
+          description: Document found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceivableAPI'
+        '404':
+          description: Document not found
+
+    patch:
+      summary: Update only part of receivable. That field was created to put title of reminder or demand for payment
+      operationId: partialUpdateDocument
+      parameters:
+        - name: id
+          description: ID of searching receivable
+          required: true
+          schema:
+            type: integer
+          in: path
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  op:
+                    type: string
+                    example: replace
+                  path:
+                    type: string
+                    example: /reminderNumber
+                  value:
+                    type: string
+              example: [ {
+                "op": "replace",
+                "path": "/reminderNumber",
+                "value": "12/C/2024"
+              } ]
+      responses:
+        '204':
+          description: Document found and updated
+        '400':
+          description: Invalid content exception
+        '404':
+          description: Document not found
+
+  /register/receivables/overdue:
+    get:
+      summary: List of overdue receivables
+      operationId: createReportAboutOverdueReceivables
+      responses:
+        '200':
+          description: List of overdue receivables
+
+  /register/receivables/overdue/grouped:
+    get:
+      summary: List of overdue receivables grouped by contractors
+      operationId: createReportAboutOverdueReceivablesGrouped
+      responses:
+        '200':
+          description: List of overdue receivables grouped by contractors
+
+  /register/receivables/aging:
+    get:
+      summary: List of overdue receivables sorted by number of delay days
+      operationId: createReportAboutOverdueReceivablesAging
+      responses:
+        '200':
+          description: List of overdue receivables sorted by number of delay days
+
+  /register/payables:
+    get:
+      summary: Get all payables that are cost documents and not fully paid
+      operationId: showAll
+      responses:
+        '200':
+          description: Get list of all payables
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayableAPI'
+
+  /register/payables/{id}:
+    get:
+      summary: Find payable by ID
+      operationId: findById
+      parameters:
+        - name: id
+          description: ID of searching payable
+          required: true
+          schema:
+            type: integer
+          in: path
+      responses:
+        '200':
+          description: Document found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayableAPI'
+        '404':
+          description: Document not found
+
+  /register/payables/overdue:
+    get:
+      summary: List of overdue payables
+      operationId: createReportAboutOverduePayables
+      responses:
+        '200':
+          description: List of overdue payables
+
+  /register/payables/overdue/grouped:
+    get:
+      summary: List of overdue payables grouped by contractors
+      operationId: createReportAboutOverduePayablesGrouped
+      responses:
+        '200':
+          description: List of overdue payables grouped by contractors
+
+  /register/payables/aging:
+    get:
+      summary: List of overdue payables sorted by number of delay days
+      operationId: createReportAboutOverduePayablesAging
+      responses:
+        '200':
+          description: List of overdue payables sorted by number of delay days
+
+
+components:
+  schemas:
+    DocumentAPI:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        documentGroup:
+          type: string
+          description: Document group
+        documentType:
+          type: string
+          description: Document type
+        documentNumber:
+          type: string
+          description: Document number
+        saleDate:
+          type: string
+          format: date
+          description: Date of sale
+        issueDate:
+          type: string
+          format: date
+          description: Date when the document was issued
+        dueDate:
+          type: string
+          format: date
+          description: Payment due date
+        contractorName:
+          type: string
+          description: Name of the contractor
+        contractorVatNumber:
+          type: integer
+          format: int64
+          description: Contractor's VAT number
+        amount:
+          type: number
+          format: decimal
+          description: Net amount
+        taxAmount:
+          type: number
+          format: decimal
+          description: Tax amount
+        totalAmount:
+          type: number
+          format: decimal
+          description: Total amount (net + tax)
+        totalAmountInPln:
+          type: number
+          format: decimal
+          description: Total amount in PLN currency
+        currencyCode:
+          type: string
+          description: Currency code (e.g., PLN, EUR, USD)
+        orderNumber:
+          type: string
+          description: Order number related to the document
+        paymentDueDate:
+          type: string
+          format: date
+          description: Payment's final due date
+        paymentAmount:
+          type: number
+          format: decimal
+          description: Payment amount
+    ReceivableAPI:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Receivable ID
+        documentId:
+          type: integer
+          format: int64
+          description: Linked document ID
+        issueDate:
+          type: string
+          format: date
+          description: Issue date of the receivable
+        documentNumber:
+          type: string
+          description: Document number
+        contractorName:
+          type: string
+          description: Name of the contractor
+        dueDate:
+          type: string
+          format: date
+          description: Due date for payment
+        delayInDays:
+          type: integer
+          format: int64
+          description: Number of days payment is overdue
+        totalAmount:
+          type: number
+          format: decimal
+          description: Total receivable amount
+        paymentAmount:
+          type: number
+          format: decimal
+          description: Amount that has been paid
+        unpaidAmount:
+          type: number
+          format: decimal
+          description: Remaining unpaid amount
+        totalAmountInPln:
+          type: number
+          format: decimal
+          description: Total amount converted to PLN
+        currencyCode:
+          type: string
+          description: Currency code (e.g., PLN, EUR, USD)
+        amountDue:
+          type: number
+          format: decimal
+          description: Amount currently due
+        reminderNumber:
+          type: string
+          description: Reminder document number (if any)
+        demandForPaymentNumber:
+          type: string
+          description: Demand for payment document number (if any)
+    AnalysisAPI:
+      type: object
+      properties:
+        receivablesSummary:
+          type: number
+          format: decimal
+          description: Total summary of receivables
+        receivablesTopValues:
+          type: array
+          description: Top receivable values
+        receivableTopContractors:
+          type: array
+          description: List of top contractors for receivables
+          items:
+            type: string
+        payablesSummary:
+          type: number
+          format: decimal
+          description: Total summary of payables
+        payablesTopValues:
+          type: array
+          description: Top payable values
+        payablesTopContractors:
+          type: array
+          description: List of top contractors for payables
+          items:
+            type: string
+        income:
+          type: number
+          format: decimal
+          description: Total income
+    PayableAPI:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Payable ID
+        documentId:
+          type: integer
+          format: int64
+          description: Linked document ID
+        issueDate:
+          type: string
+          format: date
+          description: Issue date of the payable
+        documentNumber:
+          type: string
+          description: Document number
+        contractorName:
+          type: string
+          description: Name of the contractor
+        dueDate:
+          type: string
+          format: date
+          description: Due date for payment
+        totalAmount:
+          type: number
+          format: decimal
+          description: Total amount due
+        paymentAmount:
+          type: number
+          format: decimal
+          description: Amount already paid
+        unpaidAmount:
+          type: number
+          format: decimal
+          description: Unpaid amount remaining
+        totalAmountInPln:
+          type: number
+          format: decimal
+          description: Total amount converted to PLN
+    Document:
+      type: object
+      required:
+        - id
+        - documentGroup
+        - documentType
+        - documentNumber
+        - saleDate
+        - issueDate
+        - contractorVatNumber
+        - currencyCode
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier of the document
+        documentGroup:
+          type: string
+          description: Document group
+        documentType:
+          type: string
+          description: Type of the document
+        documentNumber:
+          type: string
+          description: Document number
+        saleDate:
+          type: string
+          format: date
+          description: Date when the sale occurred
+        issueDate:
+          type: string
+          format: date
+          description: Date when the document was issued
+        dueDate:
+          type: string
+          format: date
+          description: Due date for the payment
+        contractorName:
+          type: string
+          description: Contractor name
+        contractorVatNumber:
+          type: integer
+          format: int64
+          description: VAT number of the contractor
+        amount:
+          type: number
+          format: decimal
+          description: Net amount
+        taxAmount:
+          type: number
+          format: decimal
+          description: Tax amount
+        totalAmount:
+          type: number
+          format: decimal
+          description: Total amount (net + tax)
+        totalAmountInPln:
+          type: number
+          format: decimal
+          description: Total amount converted to PLN
+        currencyCode:
+          type: string
+          description: Currency code (e.g., PLN, EUR, USD)
+        orderNumber:
+          type: string
+          description: Order number associated with the document
+        paymentDueDate:
+          type: string
+          format: date
+          description: Payment due date
+        paymentAmount:
+          type: number
+          format: decimal
+          description: Amount paid

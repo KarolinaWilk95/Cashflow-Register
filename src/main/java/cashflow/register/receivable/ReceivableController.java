@@ -23,29 +23,38 @@ public class ReceivableController {
     private final ObjectMapper objectMapper;
 
 
+
     @GetMapping("api/register/receivables")
     public List<ReceivableAPI> showAll() {
         var list = receivableService.showAll();
         return list.stream().map(receivableMapper::modelToApi).toList();
     }
 
+    @GetMapping("api/register/receivables/{id}")
+    public ReceivableAPI findById(@PathVariable Long id) {
+        var receivable = receivableService.findById(id);
+        return receivableMapper.modelToApi(receivable);
+    }
+
     @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
     @PatchMapping(value = "api/register/receivables/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
         var documentFromRepository = receivableService.findById(id);
+        applyPatchToDocument(jsonPatch, documentFromRepository, id);
 
-        try {
-            var document = applyPatchToDocument(jsonPatch, documentFromRepository);
-            receivableService.debtEnforcement(document);
-            return ResponseEntity.ok().build();
-        } catch (JsonPatchException | JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.noContent().build();
     }
 
-    private Receivable applyPatchToDocument(JsonPatch patch, Receivable receivable) throws JsonPatchException, JsonProcessingException {
-        JsonNode patched = patch.apply(objectMapper.convertValue(receivable, JsonNode.class));
-        return objectMapper.treeToValue(patched, Receivable.class);
+    private void applyPatchToDocument(JsonPatch patch, Receivable receivable, Long id) {
+        try {
+            JsonNode patched = patch.apply(objectMapper.convertValue(receivable, JsonNode.class));
+            Receivable receivableUpdated = objectMapper.treeToValue(patched, Receivable.class);
+            receivableService.partialUpdateDocument(receivableUpdated, id);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (ResourceNotFoundException e) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @GetMapping("api/register/receivables/overdue")

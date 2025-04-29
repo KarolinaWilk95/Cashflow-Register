@@ -4,6 +4,7 @@ import cashflow.document.Document;
 import cashflow.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,10 +17,10 @@ public class ReceivableService {
     private final ReceivableMapper receivableMapper;
 
 
-    public Receivable addDocument(Document newDocument) {
+    public void addDocument(Document newDocument) {
         Receivable receivable = new Receivable();
         receivable.setDocument(newDocument);
-        return receivableRepository.save(receivable);
+        receivableRepository.save(receivable);
     }
 
     public List<Receivable> showAll() {
@@ -69,5 +70,15 @@ public class ReceivableService {
 
     public List<String> topContractors() {
         return receivableRepository.topContractors();
+    }
+
+    @Transactional
+    public void partialUpdateDocument(Receivable receivableUpdated, Long id) {
+        var receivableFromRepository = receivableRepository.findById(id);
+        if (receivableFromRepository.isEmpty()) {
+            throw new ResourceNotFoundException("Selected document not found");
+        }
+        receivableUpdated.setId(id);
+        receivableRepository.save(receivableUpdated);
     }
 }
