@@ -13,7 +13,7 @@ documents into the system and supervising their proper processing.
 Automating this process will save time and increase work efficiency while ensuring greater accuracy in data processing.
 
 In this application are available roles:
-* DOCUMENT-CIRCULATION
+* DOCUMENT_CIRCULATION
 * CONTROLLING
 * MANAGEMENT
 

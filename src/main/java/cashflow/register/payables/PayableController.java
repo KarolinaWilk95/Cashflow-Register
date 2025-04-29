@@ -18,7 +18,7 @@ public class PayableController {
 
 
     @GetMapping("api/register/payables")
-    public List<PayableAPI> showAll() {
+    public List<PayableAPI> showAllPayables() {
         var list = payableService.showAll();
         return list.stream().map(payableMapper::modelToApi).toList();
     }

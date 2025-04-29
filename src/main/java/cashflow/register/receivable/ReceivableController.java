@@ -25,20 +25,20 @@ public class ReceivableController {
 
 
     @GetMapping("api/register/receivables")
-    public List<ReceivableAPI> showAll() {
+    public List<ReceivableAPI> showAllReceivables() {
         var list = receivableService.showAll();
         return list.stream().map(receivableMapper::modelToApi).toList();
     }
 
     @GetMapping("api/register/receivables/{id}")
-    public ReceivableAPI findById(@PathVariable Long id) {
+    public ReceivableAPI findReceivableById(@PathVariable Long id) {
         var receivable = receivableService.findById(id);
         return receivableMapper.modelToApi(receivable);
     }
 
-    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT_CIRCULATION')")
     @PatchMapping(value = "api/register/receivables/{id}", consumes = "application/json-patch+json")
-    public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
+    public ResponseEntity<Void> partialUpdateReceivable(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
         var documentFromRepository = receivableService.findById(id);
         applyPatchToDocument(jsonPatch, documentFromRepository, id);
 

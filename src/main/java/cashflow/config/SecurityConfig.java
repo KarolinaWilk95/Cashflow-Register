@@ -24,10 +24,10 @@ class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/token").permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST).hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION")
-                        .requestMatchers(HttpMethod.PATCH).hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION")
-                        .requestMatchers(HttpMethod.DELETE).hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION")
-                        .requestMatchers("/api/register/**").hasAnyRole("CONTROLLING", "DOCUMENT-CIRCULATION", "MANAGEMENT"))
+                        .requestMatchers(HttpMethod.POST).hasAnyRole("CONTROLLING", "DOCUMENT_CIRCULATION")
+                        .requestMatchers(HttpMethod.PATCH).hasAnyRole("CONTROLLING", "DOCUMENT_CIRCULATION")
+                        .requestMatchers(HttpMethod.DELETE).hasAnyRole("CONTROLLING", "DOCUMENT_CIRCULATION")
+                        .requestMatchers("/api/register/**").hasAnyRole("CONTROLLING", "DOCUMENT_CIRCULATION", "MANAGEMENT"))
                 .build();
     }
 

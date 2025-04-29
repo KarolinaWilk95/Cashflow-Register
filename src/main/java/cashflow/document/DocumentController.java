@@ -59,7 +59,7 @@ public class DocumentController {
         return documentMapper.modelToApi(result);
     }
 
-    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT_CIRCULATION')")
     @PostMapping("api/register/documents")
     public DocumentAPI addDocument(@Valid @RequestBody DocumentAPI documentAPI) {
         Document newDocument = documentMapper.apiToModel(documentAPI);
@@ -67,21 +67,21 @@ public class DocumentController {
         return documentMapper.modelToApi(result);
     }
 
-    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT_CIRCULATION')")
     @DeleteMapping("api/register/documents/{id}")
     public ResponseEntity<Void> deleteDocumentById(@PathVariable Long id) {
         documentService.deleteDocument(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT_CIRCULATION')")
     @PutMapping("api/register/documents/{id}")
     public ResponseEntity<Void> updateDocumentById(@PathVariable Long id, @RequestBody Document document) {
         documentService.updateDocument(id, document);
         return ResponseEntity.noContent().build();
     }
 
-    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT-CIRCULATION')")
+    @PreAuthorize("hasAnyRole('CONTROLLING', 'DOCUMENT_CIRCULATION')")
     @PatchMapping(value = "api/register/documents/{id}", consumes = "application/json-patch+json")
     public ResponseEntity<Void> partialUpdateDocument(@PathVariable Long id, @RequestBody JsonPatch jsonPatch) {
         Document documentFromRepository = documentService.findById(id);

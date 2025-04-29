@@ -1,7 +1,5 @@
 package cashflow.register;
 
-import cashflow.register.receivable.Receivable;
-
 import java.math.BigDecimal;
 import java.util.List;
 

@@ -1,7 +1,5 @@
 package cashflow.dao;
 
-import cashflow.document.DocumentGroup;
-import cashflow.document.DocumentType;
 import lombok.Data;
 
 import java.math.BigDecimal;
