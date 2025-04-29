@@ -21,56 +21,6 @@ To work with hardcoded data in the project, I used currency purchase rate:
 * USD -> 3,78 PLN
 * EUR -> 4,28 PLN
 
-### Example path to generate token ###
-
-`/api/token?username=Karolina&roles=CONTROLLING`
-
-#### Example to use PatchMapping:
-
-```courseignore
-[
-    {
-        "op":"replace", 
-        "path":"/contractorName",
-        "value":"XYZ"
-    }
-]
-```
-
-#### Available reports:
-
-1. Overdue receivables report - show receivables that have not been paid on time
-
-`/api/register/receivables/overdue`
-
-2. Overdue receivables group by contactors report - show receivables that have not been paid on time but group by
-   contactor name and sum up all unpaid invoices
-
-`/api/register/receivables/overdue/grouped`
-
-3. Aging report - sort receivables bu due date, helping to assess the risk of counterparty default.
-
-`api/register/receivables/aging`
-
-
-4. Overdue payables report - show payables that have not been paid on time
-
-`/api/register/payables/overdue`
-
-5. Overdue payables group by contactors report - show payables that have not been paid on time but group by
-   contactor name and sum up all unpaid invoices
-
-`/api/register/payables/overdue/grouped`
-
-6. Aging report - sort payables by due date, helping to assess the risk of counterparty default.
-
-`api/register/payables/aging`
-
-7. Summary report -  displays information about the receivables and payables summary, the 3 highest-value documents, and the 3 most indebted or creditor contractors.
-
-`api/register`
-
-
 ## Getting started: ##
 
 *To properly use app on your computer, please follow instructions and commands in terminal.*
